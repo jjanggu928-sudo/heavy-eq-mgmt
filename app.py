@@ -6,8 +6,8 @@ import plotly.figure_factory as ff
 import time
 
 # 1. Supabase 연결 설정
-URL = st.secrets["https://hzwhgwysbvnhdwkorleo.supabase.co"]
-KEY = st.secrets[ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6d2hnd3lzYnZuaGR3a29ybGVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0OTkyNTEsImV4cCI6MjA4MzA3NTI1MX0.tJAl9uCoAq8tiX4jBigFWy1eOedw3tYgkDxW0A-x5LM"]
+URL = st.secrets["SUPABASE_URL"]
+KEY = st.secrets["SUPABASE_KEY"]
 supabase: Client = create_client(URL, KEY)
 
 st.set_page_config(page_title="건설중기 스마트 관리 v2.2", layout="wide")
