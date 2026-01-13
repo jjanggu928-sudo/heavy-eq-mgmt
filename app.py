@@ -5,6 +5,41 @@ import pandas as pd
 import plotly.figure_factory as ff
 import time
 
+def login():
+    with st.container():
+        st.markdown("<div class='login-container'>", unsafe_allow_html=True)
+        st.subheader("🔒 관리자 로그인")
+        email = st.text_input("이메일")
+        password = st.text_input("비밀번호", type="password")
+        
+        if st.button("로그인"):
+            try:
+                # 1. 일반 로그인 시도
+                res = supabase.auth.sign_in_with_password({"email": email, "password": password})
+                user_id = res.user.id
+                
+                # 2. user_permissions 테이블에서 권한 조회 (GUI로 입력한 데이터 확인)
+                # public 스키마의 user_permissions 테이블을 조회합니다.
+                perm_res = supabase.table("user_permissions") \
+                    .select("*") \
+                    .eq("user_id", user_id) \
+                    .eq("app_name", "heavy_eq_mgmt") \
+                    .execute()
+                
+                # 3. 데이터가 존재하면 승인, 없으면 거부
+                if len(perm_res.data) > 0:
+                    st.session_state.user = res.user
+                    st.success("권한 확인 완료. 접속합니다.")
+                    time.sleep(1)
+                    st.rerun()
+                else:
+                    supabase.auth.sign_out()
+                    st.error("❌ 이 앱에 대한 사용 권한이 없습니다. 관리자에게 문의하세요.")
+                    
+            except Exception as e:
+                st.error("로그인 정보가 올바르지 않거나 시스템 오류가 발생했습니다.")
+        st.markdown("</div>", unsafe_allow_html=True)
+
 # --- 1. 페이지 설정 및 스타일 ---
 st.set_page_config(page_title="중장비 배차 관리 시스템", layout="wide", initial_sidebar_state="collapsed")
 
